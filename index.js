@@ -26,7 +26,7 @@ io.on('connection', function(socket){
   	for (var room in socket.rooms) {
   		io.to(room).emit('set stat', msg);
   	}
-    console.log(socket.rooms);
+    console.log(msg);
   });
 });
 
