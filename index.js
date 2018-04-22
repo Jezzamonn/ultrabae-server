@@ -21,9 +21,7 @@ io.on('connection', function(socket){
   	socket.join(username);
     console.log('phone joining room ' + username);
     // Let unity know someone joined
-    for (var room in socket.rooms) {
-      io.to(room).emit('phone connect', username);
-    }
+    io.to(username).emit('phone connect', username);
   });
 
   socket.on('set stat', function(msg){
