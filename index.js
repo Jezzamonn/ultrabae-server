@@ -20,6 +20,8 @@ io.on('connection', function(socket){
   	// Ditto.
   	socket.join(username);
     console.log('phone joining room ' + username);
+    // Let unity know someone joined
+    io.to(room).emit('phone connect');
   });
 
   socket.on('set stat', function(msg){
