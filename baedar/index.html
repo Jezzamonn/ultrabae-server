@@ -11,6 +11,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="authoring-tool" content="Adobe_Animate_CC">
+<meta content='width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;' name='viewport' />
+<meta name="viewport" content="width=device-width" />
 <title>Baedar</title>
 <!-- write your code here -->
 <style>
@@ -23,7 +25,8 @@
 </style>
 <script src="/socket.io/socket.io.js"></script>
 <script src="https://code.createjs.com/createjs-2015.11.26.min.js"></script>
-<script src="baedar.js?1524395670544"></script>
+<script src="stats.js"></script>
+<script src="baedar.js"></script>
 <script>
 var canvas, stage, exportRoot, anim_container, dom_overlay_container, fnStartAnimation;
 function init() {
@@ -32,12 +35,21 @@ function init() {
 	dom_overlay_container = document.getElementById("dom_overlay_container");
 	var comp=AdobeAn.getComposition("5769986BB74349668603016E48E17B41");
 	var lib=comp.getLibrary();
-	handleComplete({},comp);
+	var loader = new createjs.LoadQueue(false);
+	loader.installPlugin(createjs.Sound);
+	loader.addEventListener("complete", function(evt){handleComplete(evt,comp)});
+	var lib=comp.getLibrary();
+	loader.loadManifest(lib.properties.manifest);
 }
 function handleComplete(evt,comp) {
 	//This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
 	var lib=comp.getLibrary();
 	var ss=comp.getSpriteSheet();
+	var queue = evt.target;
+	var ssMetadata = lib.ssMetadata;
+	for(i=0; i<ssMetadata.length; i++) {
+		ss[ssMetadata[i].name] = new createjs.SpriteSheet( {"images": [queue.getResult(ssMetadata[i].name)], "frames": ssMetadata[i].frames} )
+	}
 	exportRoot = new lib.Baedar();
 	stage = new lib.Stage(canvas);	
 	//Registers the "tick" event listener.
@@ -85,6 +97,9 @@ function handleComplete(evt,comp) {
 	makeResponsive(true,'both',true,1);	
 	AdobeAn.compositionLoaded(lib.properties.id);
 	fnStartAnimation();
+}
+function playSound(id, loop) {
+	return createjs.Sound.play(id, createjs.Sound.INTERRUPT_EARLY, 0, 0, loop);
 }
 </script>
 <!-- write your code here -->
