@@ -164,6 +164,7 @@ p.nominalBounds = new cjs.Rectangle(-26.1,-25,50.1,53.8);
 		
 		function sayYes() {
 			this.yesButton.play();
+			socket.emit('phone connect', username);
 			socket.emit('set stat', this.curStats);
 			this.randomizeStats();
 		}
